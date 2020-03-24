@@ -5,7 +5,7 @@ Created on Wed Mar  4 15:04:43 2020
 
 @author: davide
 """
-#import packages
+#import packages (because we are working with dynamic websites, the installation of geckodriver is needed)
 from bs4 import BeautifulSoup as BSoup
 import urllib.request
 from bs4 import BeautifulSoup
