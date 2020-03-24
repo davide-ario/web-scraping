@@ -100,7 +100,7 @@ def get_table_zefix():
 
 # this function downloads the selected data
 #canton is the name of the canton as defined in zefix website
-#mutation is the kind of mutation reported in the trade register, as defined in the zefix website
+#mutation is the type of mutation reported in the trade register, as defined in the zefix website
 def zefix_data(urlpage, canton, mutation, from_data, to_data ):
     #time.sleep(5)
     try:
@@ -261,6 +261,7 @@ for cant in list_cant:
         print("canton {} search is empty".format(cant))
         continue
     adress_changed=adress_changed.append(temp_data)
+driver.quit()
 
 #save all the downloaded datasets as csv files, in the directory C:\Users\davide\Documents\lavoro\ (you can change the path)
 Ticino_trasf_out= zefix_data(urlpage, canton='ticino', mutation='adress', from_data="01.10.2019", to_data="31.12.2019")
