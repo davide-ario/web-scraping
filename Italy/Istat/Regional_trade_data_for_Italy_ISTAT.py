@@ -99,7 +99,7 @@ def get_table():
 # this function: navigate the browser to selct the product, partner country, year and quarter selected; donwload the data and return a panel dataset.
 # product_code and country_code are defined in the results of  merci=get_elements_byname('MERCE', link=urlpage, hide_browser=True) and paesi=get_elements_byname('PAESE', link=urlpage, hide_browser=True)
 # year and quarter are the selected time variables
-#cumulated is == True for cumulated period, as define in the istat website
+#cumulated is == True for cumulated period, as defined in the istat website
 def get_data(product_code, country_code, year,  quarter,  link, cumulated):
     #connect to the url specified by the link
     driver.get(link)
@@ -150,7 +150,7 @@ def get_data(product_code, country_code, year,  quarter,  link, cumulated):
 
 #Example
 #download export and import values for the product CL291 (autovehicles) with partner country 4 (Germany) in year 2015, for each nuts3 district area in Italy
-#be aware, istat website download data from the selected year t to t-3. Selecting 2015, the function will provide results for year from 2013 to 2015.
+#be aware: istat website download data from the selected year t to t-3. Selecting 2015, the function will provide results for year from 2013 to 2015.
 Car_trade_with_Germany=get_data(product_code='CL291', country_code='4', year='2015', quarter='4', cumulated=True,  link=urlpage)
 
 
@@ -172,7 +172,7 @@ options = Options()
 options.headless = True
 time.sleep(0)
 driver = webdriver.Firefox(options=options)
-#we start to iterate over our variable
+#we start to iterate over our variables
 i=0
 j=0
 while i !=len(paesi_subset.code):
