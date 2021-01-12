@@ -263,8 +263,9 @@ for cant in list_cant:
     adress_changed=adress_changed.append(temp_data)
 driver.quit()
 
-#save all the downloaded datasets as csv files, in the directory C:\Users\davide\Documents\lavoro\ (you can change the path)
+#example
 Ticino_trasf_out= zefix_data(urlpage, canton='ticino', mutation='adress', from_data="01.10.2019", to_data="31.12.2019")
+#save all the downloaded datasets as csv files, in the directory C:\Users\davide\Documents\lavoro\ (you can change the path)
 Ticino_neu.to_csv(r'C:\Users\davide\Documents\lavoro\ticino_aperture.csv', index=False, sep=';')
 Ticino_canc.to_csv(r'C:\Users\davide\Documents\lavoro\ticino_cancellazioni.csv', index=False, sep=';')
 adress_changed.to_csv(r'C:\Users\davide\Documents\lavoro\adress_changed.csv', index=False, sep=';')
