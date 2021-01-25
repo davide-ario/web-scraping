@@ -26,7 +26,7 @@ import itertools
 
 #the next 2 functions are created to select the data in the zefix calendar
 def month_selection(month_to_select, cal_number):
-#cal number = the calendar I want to select, 0 is the first (from date), 1 is the second (to date)
+#cal number is the calendar, 0 for from, 1 for to
     #indexing start from 0 = january
     month_to_select=month_to_select-1
     selected_month=int(Select(driver.find_elements_by_class_name('pika-select-month')[cal_number]).first_selected_option.get_attribute('value'))
@@ -44,7 +44,7 @@ def month_selection(month_to_select, cal_number):
             driver.find_elements_by_class_name('pika-prev')[cal_number].click()
             i+=1
     else:
-        print('month already selected')
+        print('month already selected')              
 
 def select_data(data, cal_number):
     if cal_number=="from":
@@ -66,16 +66,29 @@ def select_data(data, cal_number):
     table=driver.find_elements_by_class_name('pika-table')[cal_number]
     day=(table.find_elements_by_class_name('pika-button'))
     day[int(data[0])-1].click()
-
+    
 #Example
 # select_data("30.06.2018", 1)
 
-#this is a fast function to copy the data from the html table
+#this is a fast function to copy data from html tables
 def get_table_zefix():
-##download table from the opened html page and select rows
+##download table from opened page and select rows
     bs_obj = BSoup(driver.page_source, 'html.parser')
     body= bs_obj.find('tbody')
     rows= body.find_all('tr')
+#    #create empty variables
+#    file_data = []
+#    file_header = []
+#    ##download header (column names)
+#    file_header = []
+#    th_row=rows[0].find_all('th')
+#    i=0
+#    while i!= len(th_row):
+#        col_name = th_row[i].get_text().strip()
+#        file_header.append(col_name)
+#        i+=1
+#    i=0    
+    ##download data
     file_header=('ditta', 'estratto', 'idi', 'forma', 'sede', 'cantone', 'tipo')
     file_data=[]
     i=0
@@ -108,47 +121,51 @@ def zefix_data(urlpage, canton, mutation, from_data, to_data ):
        #set italian language and extended search, waiting the page is loaded
         myElem = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/header/div/div[1]/section/nav[2]/ul/li[3]/a')))
         myElem.click()
-        driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[12]/a/div[1]/span[2]').click()
+        #select extended search
+        driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[13]/a/div[1]/span[2]').click()
     except TimeoutException:
         print("Loading took too much time!")
+#    try:
+#        driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[5]/fieldset/div/div[1]/span/a/i').clear()
+#    except:
+#        print('canton not selected')
     #select canton
     time.sleep(1)
     driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[5]/fieldset/div/div[1]/span').click()
     driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[5]/fieldset/div/input[1]').send_keys(canton + Keys.ENTER)
-    #select type of mutation (!!be aware!!! to use german definition of type of mutation; differently the search does not return the right results )
+    #select type of mutation (!!be aware!!! to use deutsch definition of type of mutation; differently the search does not return the right results )
     time.sleep(1)
     driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[8]/fieldset/div/div[1]/span').click()
     driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[8]/fieldset/div/input[1]').send_keys(mutation + Keys.ENTER)
-    ## clear the input fields of the calendars data
+    ##prima di far partire qualsiasi cosa devo cancellare i due campi del calendario...
     driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[2]/fieldset/div/input').clear()
     driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[3]/fieldset/div/input').clear()
     #insert the date in the first datapicker (date from)
     select_data(from_data, "from")
-    #insert the date in the second datapicker (date to), be aware, it need some second for insertion
+    #insert the date in the second datapicker (date from), be aware, it need some second for insertion
     select_data(to_data, "to")
     #time.sleep(3)
     #click search button
     driver.find_element_by_id('submit-search-btn').click()
-    #waiting the website to give us an answer....
+    #waiting the website give us an answer....
     time.sleep(7)
+    #select 100 result for each page
     data = pd.DataFrame()
     try:
-        #select 100 result for each page
         cont=WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div/div/div[2]/div/div[2]/div[1]/zefix-pagination/nav/div[3]/div[2]/span[4]')))
         cont.click()
-        #select the number of pages on which I need to iterate
         number_pages= int(driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[2]/div/div[2]/div[1]/zefix-pagination/nav/div[1]/span[2]').text[1:])
-        ##iterate over all the pages
+        ##da qui gli devo dire di leggere tutto i tr, poi per ogni elemento in tr leggere il td e prendere testo
         p=0
         while p != number_pages:
             input_page=driver.find_element_by_id('input-page-nr')
-            result = get_table_zefix()
+            result = get_table_zefix()                          
             data=data.append(result)
             driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[2]/div/div[2]/div[1]/zefix-pagination/nav/div[1]/div[3]').click()
             p+=1
         del p
         return(data)
-
+                                   
     except:
         print('no result for this search or too much time for results')
 
