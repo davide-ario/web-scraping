@@ -1,7 +1,8 @@
 # web-scraping
-Algorithms for scraping data from statistical websites and organize them as panel data
+Algorithms for scraping data from statistical websites and organize them as panel data.
 
-There are available a set of functions to download data from different sources, in order to speed up accademic researches.<br/>
-Because we are working with dynamic websites, the installation of geckodriver (https://github.com/mozilla/geckodriver) is needed. <br/>
-Codes are optimized for firefox. <br/>
- 
+There are available a set of new python and R functions to download data from different sources, in order to speed up accademic researches.<br/>
+
+The python codes work with dynamic websites and are optimized for firefox. The installations of selenium (https://selenium-python.readthedocs.io/installation.html) and geckodriver (https://github.com/mozilla/geckodriver) are needed. <br/>
+If you want to use different browser, please download and install the different packages, following selenium instructions.  <br/>
+If you are looking for a simple IDE to manage the data, use Spyder (https://pypi.org/project/spyder/) <br/>
