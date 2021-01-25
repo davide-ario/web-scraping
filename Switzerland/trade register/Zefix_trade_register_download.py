@@ -13,7 +13,7 @@ from selenium import webdriver
 import time
 import ssl
 from selenium.webdriver.firefox.options import Options
-import pandas as pd# specify the url
+import pandas as pd
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 import random
@@ -59,9 +59,9 @@ def select_data(data, cal_number):
     y=driver.find_elements_by_class_name('pika-select-year')
     y=Select(y[cal_number])
     y.select_by_value(data[2])
-    #select the month (devo usare freccie perche' il selezionatore diretto da problemi)
+    #select the month (we need to select the arrows in the calendar)
     month_selection(int(data[1]), cal_number)
-    #select the day of the month and insert date (!!be aware!! con 0)
+    #select the day of the month and insert date (be aware with 0)
     #datapicker.click()
     table=driver.find_elements_by_class_name('pika-table')[cal_number]
     day=(table.find_elements_by_class_name('pika-button'))
@@ -76,19 +76,8 @@ def get_table_zefix():
     bs_obj = BSoup(driver.page_source, 'html.parser')
     body= bs_obj.find('tbody')
     rows= body.find_all('tr')
-#    #create empty variables
-#    file_data = []
-#    file_header = []
-#    ##download header (column names)
-#    file_header = []
-#    th_row=rows[0].find_all('th')
-#    i=0
-#    while i!= len(th_row):
-#        col_name = th_row[i].get_text().strip()
-#        file_header.append(col_name)
-#        i+=1
-#    i=0    
-    ##download data
+    ##download data, you can modify the name herebelow in your preferred language. 
+    #The fields are: firm's name, excerpt, uid register, legal form, company's city adress, canton, type of mutation
     file_header=('ditta', 'estratto', 'idi', 'forma', 'sede', 'cantone', 'tipo')
     file_data=[]
     i=0
@@ -118,17 +107,13 @@ def zefix_data(urlpage, canton, mutation, from_data, to_data ):
     #time.sleep(5)
     try:
         driver.get(urlpage)
-       #set italian language and extended search, waiting the page is loaded
+       #set italian language (language does not influence code) and extended search, waiting the page is loaded
         myElem = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/header/div/div[1]/section/nav[2]/ul/li[3]/a')))
         myElem.click()
         #select extended search
         driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[13]/a/div[1]/span[2]').click()
     except TimeoutException:
         print("Loading took too much time!")
-#    try:
-#        driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[5]/fieldset/div/div[1]/span/a/i').clear()
-#    except:
-#        print('canton not selected')
     #select canton
     time.sleep(1)
     driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[5]/fieldset/div/div[1]/span').click()
@@ -137,19 +122,18 @@ def zefix_data(urlpage, canton, mutation, from_data, to_data ):
     time.sleep(1)
     driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[8]/fieldset/div/div[1]/span').click()
     driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[8]/fieldset/div/input[1]').send_keys(mutation + Keys.ENTER)
-    ##prima di far partire qualsiasi cosa devo cancellare i due campi del calendario...
+    ##delete all the fields in the calendar
     driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[2]/fieldset/div/input').clear()
     driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[1]/div/form/div/div/div/div[3]/fieldset/div/input').clear()
     #insert the date in the first datapicker (date from)
     select_data(from_data, "from")
     #insert the date in the second datapicker (date from), be aware, it need some second for insertion
     select_data(to_data, "to")
-    #time.sleep(3)
     #click search button
     driver.find_element_by_id('submit-search-btn').click()
-    #waiting the website give us an answer....
+    #waiting for the website to give us an answer....
     time.sleep(7)
-    #select 100 result for each page
+    #select 100 results for each page
     data = pd.DataFrame()
     try:
         cont=WebDriverWait(driver, 50).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div/div/div[2]/div/div[2]/div[1]/zefix-pagination/nav/div[3]/div[2]/span[4]')))
@@ -170,7 +154,13 @@ def zefix_data(urlpage, canton, mutation, from_data, to_data ):
         print('no result for this search or too much time for results')
 
 
-# these scripts download the list of cantons and mutations reported in the zefix website
+##########################################################################################
+#Some utilities
+##########################################################################################
+
+
+#these scripts download the list of cantons and mutations reported in the zefix website, 
+#that you can insert in the code
 urlpage = 'https://www.zefix.ch/en/search/shab/welcome'
 options = Options()
 options.headless = False
@@ -182,6 +172,7 @@ driver.quit()
 
 list_canton = list_canton.split('\n')
 list_canton = [i[5:] for i in list_canton]
+
 #this is the list of cantons I can insert in my zefix_data function
 list_canton=['Aargau',
  'Appenzell I. Rh.',
@@ -212,14 +203,15 @@ list_canton=['Aargau',
  'Zug',
  'Zürich']
 
-###################################################################
+
+##############################################################################
 #Example
-###################################################################
+##############################################################################
 
 #Open the browser in the zefix input mask, with visible browser
 urlpage = 'https://www.zefix.ch/en/search/shab/welcome'
 options = Options()
-options.headless = False
+options.headless = False #set True for hidden browser
 time.sleep(0)
 driver = webdriver.Firefox(options=options)
 canton = 'Geneva'
