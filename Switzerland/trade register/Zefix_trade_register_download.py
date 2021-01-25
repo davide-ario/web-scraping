@@ -3,8 +3,13 @@
 """
 Created on Wed Mar  4 15:04:43 2020
 
-@author: davide
+@author: Davide Arioldi
 """
+
+################################################################################################
+#1. Required packages and functions to import
+################################################################################################
+
 #import packages (because we are working with dynamic websites, the installation of geckodriver is needed)
 from bs4 import BeautifulSoup as BSoup
 import urllib.request
@@ -24,6 +29,7 @@ from selenium.common.exceptions import TimeoutException
 import itertools
 
 
+#Functions to import
 #the next 2 functions are created to select the data in the zefix calendar
 def month_selection(month_to_select, cal_number):
 #cal number is the calendar, 0 for from, 1 for to
@@ -155,7 +161,7 @@ def zefix_data(urlpage, canton, mutation, from_data, to_data ):
 
 
 ##########################################################################################
-#Some utilities
+#2. Some utilities
 ##########################################################################################
 
 
@@ -205,7 +211,7 @@ list_canton=['Aargau',
 
 
 ##############################################################################
-#Example
+#3. Example
 ##############################################################################
 
 #Open the browser in the zefix input mask, with visible browser
@@ -273,7 +279,7 @@ for cant in list_cant:
 driver.quit()
 
 #example
-Ticino_trasf_out= zefix_data(urlpage, canton='ticino', mutation='adress', from_data="01.10.2019", to_data="31.12.2019")
+
 #save all the downloaded datasets as csv files, in the directory C:\Users\davide\Documents\lavoro\ (you can change the path)
 Ticino_neu.to_csv(r'C:\Users\davide\Documents\lavoro\ticino_aperture.csv', index=False, sep=';')
 Ticino_canc.to_csv(r'C:\Users\davide\Documents\lavoro\ticino_cancellazioni.csv', index=False, sep=';')
