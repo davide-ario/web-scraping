@@ -5,6 +5,10 @@ Created on Tue Feb 11 15:14:13 2020
 
 @author: davide
 """
+##########################################################################################################
+#1. Functions and required packages
+##########################################################################################################
+
 #the next functions are defined to donwload trade regional data (as a panel dataset) from the istat website
 # Url target
 urlpage = 'https://www.coeweb.istat.it/predefinite/tutto_merce_territorio.asp?livello=ATE07_AT3&riga=MERCE&territorio=S'
@@ -150,7 +154,7 @@ def get_data(product_code, country_code, year,  quarter,  link, cumulated):
 
 
 ##############################################################################################
-#Example
+#2. Example
 #############################################################################################
 
 #download export and import values for the product CL291 (autovehicles) with partner country 4 (Germany) in year 2015, for each nuts3 district area in Italy
@@ -159,7 +163,7 @@ Car_trade_with_Germany=get_data(product_code='CL291', country_code='4', year='20
 
 
 ###########################################################
-#Utilities
+#3. Utilities
 ###########################################################
 #Using the previous function (get_data), we can easily download, as a panel dataset, the data we specifie.
 #If we need to download more products, countries or years, we must use a loop. 
