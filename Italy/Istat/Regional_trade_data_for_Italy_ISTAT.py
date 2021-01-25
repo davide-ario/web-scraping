@@ -96,7 +96,7 @@ def get_table():
     return(df)
 
 
-# this function: navigate the browser to selct the product, partner country, year and quarter selected; donwload the data and return a panel dataset.
+# this function navigates the browser to selct the product, partner country, year and quarter selected; then it downloads the data and returns a panel dataset.
 # product_code and country_code are defined in the results of  merci=get_elements_byname('MERCE', link=urlpage, hide_browser=True) and paesi=get_elements_byname('PAESE', link=urlpage, hide_browser=True)
 # year and quarter are the selected time variables
 #cumulated is == True for cumulated period, as defined in the istat website
@@ -148,20 +148,30 @@ def get_data(product_code, country_code, year,  quarter,  link, cumulated):
 
     return(df)
 
+
+##############################################################################################
 #Example
+#############################################################################################
+
 #download export and import values for the product CL291 (autovehicles) with partner country 4 (Germany) in year 2015, for each nuts3 district area in Italy
 #be aware: istat website download data from the selected year t to t-3. Selecting 2015, the function will provide results for year from 2013 to 2015.
 Car_trade_with_Germany=get_data(product_code='CL291', country_code='4', year='2015', quarter='4', cumulated=True,  link=urlpage)
 
 
 ###########################################################
-#Using the previous functions we can easily download all the data we need into a panel dataset.
-#the following code create:
+#Utilities
+###########################################################
+#Using the previous function (get_data), we can easily download, as a panel dataset, the data we specifie.
+#If we need to download more products, countries or years, we must use a loop. 
+#Herebelow, we provide some utilities to download data for multiple fields, to store them in separate files and to use the csv file as a backup, to pause the download when you want. 
+#This function is really usefull because downloading many fiels could require a large amount of time. 
+#The following code create:
 #1. one csv file with name prod#c#15  located in the directory '/home/davide/pythonData/example/' (you can change it with your path) for each product, country and year selected
 #2. one csv file with name Allprod15c#  located in the directory '/home/davide/pythonData/example/' (you can change it with your path) for all the products and the already downloaded countries in the year you selected
-# using the csv file as a backup, is possible to stop and resume the download of the data from the last downloaded country or product
+# using the csv file as a backup, is possible to stop and resume the download of the data from the last downloaded country or product. To resume the download from the last datapoint,
+#you have to modify the paesi_subset and merci_subset fields.
 
-#We select all the country, year and goods we want to push into our dataset
+#We select all the countries, years and goods we want to include in our dataset
 paesi_subset=paesi[0:222]
 merci_subset = merci[0:10]
 
@@ -191,7 +201,7 @@ while i !=len(paesi_subset.code):
         except:
             print('product {} for country "{}" returns an empty list'.format(merc_temp, c_temp))
             j+=1
-    #the following code creates a csv file with name Allprod15c#  located in the directory '/home/davide/pythonData/example/' (you can change it with your path) for all the product with the already processed country in the selected year
+    #the following code creates a csv file with name Allprod15c#  located in the directory '/home/davide/pythonData/example/' (you can change it with your path) for all the product with the already processed countries in the selected years
     name_a=('/home/davide/pythonData/example/Allprod15c{}.csv'.format(c_temp))
     example_sub.to_csv(name_a)
     i+=1
