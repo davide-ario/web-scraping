@@ -69,9 +69,17 @@ options.headless = False
 driver = webdriver.Firefox(options=options)
 time.sleep(6)
 
-#download all the tables browsing among the different webpages (simply changing the number in the url)
+
+#########################################################
+#2. Expamle
+***********************************************************
+#download all the BTI, browsing among the different webpages 
+# To download the BTI of different country we can simply change the number in the url, because they are sequentially stored.
+
+#download the BTI for the first country
 new=copy_table_bit(1)
-for i in range(2,237):
+#download the BTI for the other countries (from 2 to 236); the "data" dataframe will contain all the records
+for i in range(2,237):                           
     try:
         data, country=copy_table_bit(i)
         new=bit.append(data,  ignore_index=True)
@@ -83,7 +91,7 @@ for i in range(2,237):
 driver.quit()       
 
 #############################################
-#2. Add iso code and year to the table
+#3. Add iso code and year to the table
 #############################################
 ## insert iso code for country using dictionary
 dictionary = {
