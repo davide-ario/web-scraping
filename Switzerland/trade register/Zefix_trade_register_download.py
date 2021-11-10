@@ -161,7 +161,7 @@ def zefix_data(urlpage, canton, mutation, from_data, to_data ):
 
 
 ##########################################################################################
-#2. Some utilities
+#2. Functions to donwnload list of cantons and mutations
 ##########################################################################################
 
 
